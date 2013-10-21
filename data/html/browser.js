@@ -67,21 +67,21 @@ var buildDirectoryElement = function (directory, depth) {
 	
 	var aElement = document.createElement("a");
 	aElement.href = "#";
+	aElement.expanded = false;
 	aElement.onclick = function () {
-		console.log(aElement.expanded);
 		if (aElement.expanded) {
 			clearDirectory(aElement.parentNode);
 		} else {
 			explore(directory.path);
 		}
 		aElement.expanded = !aElement.expanded;
-		aElement.innerHTML = aElement.expanded ? "-" : "+";
+		aElement.children[0].className = aElement.expanded ? "expanded" : "contracted";
 	};
-	
-	var content = directory.foldercount == 0 ? " " : "+";
-	aElement.innerHTML = content;
-	aElement.expanded = false;
 	divElement.appendChild(aElement);
+	
+	var iconDivElement = document.createElement("div");
+	iconDivElement.className = "contracted";	// TODO test directory.foldercount
+	aElement.appendChild(iconDivElement);
 	
 	var labelElement = document.createElement("div");
 	labelElement.style = "display: inline;";
