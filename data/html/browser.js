@@ -40,84 +40,139 @@ var fileSystem = {
 // The selected path
 var selectedPath = null;
 
+/*
+ * Build explorer.
+ */
 var buildExplorer = function (path, depth) {
+	// Get path content
 	var directory = fileSystem.get(path);
 	if (directory === undefined)
 		return;
+	// Get path identifier
 	var id = depth == 0 ? "filesystem" : path;
 	// Get parent element
 	var parentElement = document.getElementById(id);
 	// Clean parent element if exists
 	if (parentElement !== null)
 		clearDirectory(parentElement);
-	
+	// Build each path content element
 	for (var index in directory) {
+		// Get path file
 		var file = directory[index];
+		// Skip hidden file
 		if (file.hidden)
 			continue;
-		parentElement.appendChild(buildDirectoryElement(file, depth));
+		// Append build file element
+		parentElement.appendChild(buildDirectory(file, depth));
 	}
 };
 
-var buildDirectoryElement = function (directory, depth) {
+/*
+ * Build directory.
+ */
+var buildDirectory = function (directory, depth) {
+	/*
+	 * Create root div element.
+	 */
+	// Create div element
 	var divElement = document.createElement("div");
+	// Set identifier as path
 	divElement.id = directory.path;
+	// Mark as not selected
 	divElement.isSelected = false;
+	// Add padding related to depth
 	divElement.style = "margin-left: " + (depth * 20) + "px;";
-	
+	/*
+	 * Create a element.
+	 */
+	// Create a element
 	var aElement = document.createElement("a");
+	// Set link as empty anchor
 	aElement.href = "#";
+	// Mark as not expanded
 	aElement.expanded = false;
+	// Add onclick behavior
 	aElement.onclick = function () {
+		// Check expanded status
 		if (aElement.expanded) {
+			// Clear directory
 			clearDirectory(aElement.parentNode);
 		} else {
+			// Explore directory
 			explore(directory.path);
 		}
+		// Change expanded status
 		aElement.expanded = !aElement.expanded;
+		// Update related class name
 		aElement.children[0].className = aElement.expanded ? "expanded" : "contracted";
 	};
+	// Append a element to root div element
 	divElement.appendChild(aElement);
-	
+	/*
+	 * Create icon div element.
+	 */
+	// Create icon div element
 	var iconDivElement = document.createElement("div");
-	iconDivElement.className = "contracted";	// TODO test directory.foldercount
+	// Set default class name as contracted
+	iconDivElement.className = "contracted";
+	// Append icon div element to a element
 	aElement.appendChild(iconDivElement);
-	
-	var labelElement = document.createElement("div");
-	labelElement.style = "display: inline;";
-	labelElement.innerHTML = directory.name;
-	labelElement.onclick = function () {
-		toggleSelection(labelElement.parentNode);
+	/*
+	 * Create label div element.
+	 */
+	// Create label div element
+	var labelDivElement = document.createElement("div");
+	// Set display style
+	labelDivElement.style = "display: inline;";
+	// Set content as directory name
+	labelDivElement.innerHTML = directory.name;
+	// Add onclick behavior
+	labelDivElement.onclick = function () {
+		// Select directory
+		selectDirectory(labelDivElement.parentNode);
 	}
-	divElement.appendChild(labelElement);
-	
+	// Append label div element to root div element
+	divElement.appendChild(labelDivElement);
+	// Return root div element
 	return divElement;
-}
+};
 
-var toggleSelection = function (directoryElement) {
-	var selected = !directoryElement.isSelected;
-	directoryElement.isSelected = selected;
-	if (selected) {
-		if (selectedPath !== null) {
-			var selectedDirectoryElement = document.getElementByIt(selectedPath);
-			if (selectedDirectoryElement !== null)
-				toggleSelection(selectedDirectoryElement);
+/*
+ * Select a directory.
+ */
+var selectDirectory = function (directoryElement) {
+	// Check current selected path
+	if (selectedPath !== null) {
+		// Get related selected element
+		var selectedDirectoryElement = document.getElementById(selectedPath);
+		if (selectedDirectoryElement !== null) {
+			// Mark as not selected
+			selectedDirectoryElement.isSelected = false;
+			// Remove class name
+			selectedDirectoryElement.className = "";
 		}
-		directoryElement.className = "selected";
-		selectedPath = directoryElement.id;
-	} else {
-		directoryElement.className = "";
-		selectedPath = null;
 	}
-} 
+	// Mark as selected
+	directoryElement.isSelected = true;
+	// Add selected class name
+	directoryElement.className = "selected";
+	// Save selected path
+	selectedPath = directoryElement.id;
+};
 
+/*
+ * Clear a directory content.
+ */
 var clearDirectory = function (directoryElement) {
-	var childrens = directoryElement.childNodes;
+	// Get directory element children
+	var children = directoryElement.childNodes;
+	// Check if root must be kept
 	var keepChildren = directoryElement.id === "filesystem" ? 0 : 2;
-	while (childrens.length > keepChildren) {
-		directoryElement.removeChild(childrens[keepChildren]);
+	// Remove children
+	while (children.length > keepChildren) {
+		directoryElement.removeChild(children[keepChildren]);
 	}
-}
+};
 
 /*
  * Explore a path.
@@ -125,7 +180,7 @@ var clearDirectory = function (directoryElement) {
 var explore = function (path) {
 	// Send a message to list content of a path
 	self.port.emit("ls", path);
-}
+};
 
 /*
  * Valid the selected path.
@@ -136,7 +191,7 @@ var valid = function () {
 		return;
 	// Send add-on message to select path
 	self.port.emit("select", selectedPath);
-}
+};
 
 /*
  * Cancel the dialog.
@@ -144,11 +199,11 @@ var valid = function () {
 var cancel = function() {
 	// Send add-on message to close panel
 	self.port.emit("cancel");
-}
+};
 
 var dump = function (variable, filter) {
 	self.port.emit("dump", variable, filter);
-}
+};
 
 /*
  * Initialize control action.
