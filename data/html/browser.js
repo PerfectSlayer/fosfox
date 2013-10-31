@@ -52,9 +52,10 @@ var buildExplorer = function (path, depth) {
 	var id = depth == 0 ? "filesystem" : path;
 	// Get parent element
 	var parentElement = document.getElementById(id);
-	// Clean parent element if exists
-	if (parentElement !== null)
-		clearDirectory(parentElement);
+	if (parentElement === null)
+		return;
+	// Clean parent element
+	clearDirectory(parentElement);
 	// Build each path content element
 	for (var index in directory) {
 		// Get path file
@@ -65,6 +66,12 @@ var buildExplorer = function (path, depth) {
 		// Append build file element
 		parentElement.appendChild(buildDirectory(file, depth));
 	}
+	// Change a element expanded status
+	var aElement = parentElement.firstChild;
+	aElement.expanded = true;
+	// Change img class name
+	var imgElement = aElement.firstChild;
+	imgElement.className = "expanded";
 };
 
 /*
@@ -101,10 +108,6 @@ var buildDirectory = function (directory, depth) {
 			// Explore directory
 			explore(directory.path);
 		}
-		// Change expanded status
-		aElement.expanded = !aElement.expanded;
-		// Update related class name
-		aElement.children[0].className = aElement.expanded ? "expanded" : "contracted";
 	};
 	// Append a element to root div element
 	divElement.appendChild(aElement);
@@ -171,6 +174,15 @@ var clearDirectory = function (directoryElement) {
 	// Remove children
 	while (children.length > keepChildren) {
 		directoryElement.removeChild(children[keepChildren]);
+	}
+	// Check children to update
+	if (keepChildren > 0) {
+		// Change a element expanded status
+		var aElement = directoryElement.firstChild;
+		aElement.expanded = false;
+		// Change icon div class name
+		var iconDivElement = aElement.firstChild;
+		iconDivElement.className = "contracted";
 	}
 };
 
