@@ -1,4 +1,3 @@
-
 /*
  * The file system representation.
  */
@@ -37,203 +36,206 @@ var fileSystem = {
 	}
 };
 
-// The selected path
-var selectedPath = null;
-
 /*
  * Build explorer.
  */
-var buildExplorer = function (path, depth) {
+var buildExplorer = function (path) {
 	// Get path content
 	var directory = fileSystem.get(path);
 	if (directory === undefined)
 		return;
-	// Get path identifier
-	var id = depth == 0 ? "filesystem" : path;
-	// Get parent element
-	var parentElement = document.getElementById(id);
-	if (parentElement === null)
-		return;
-	// Clean parent element
-	clearDirectory(parentElement);
 	// Build each path content element
+	var nodes = new Array();
 	for (var index in directory) {
 		// Get path file
 		var file = directory[index];
 		// Skip hidden file
 		if (file.hidden)
 			continue;
-		// Append build file element
-		parentElement.appendChild(buildDirectory(file, depth));
+		// Append file element
+		nodes.push({
+			id: file.path,
+			text: file.name,
+			img: 'icon-folder'
+		});
 	}
-	// Change a element expanded status
-	var aElement = parentElement.firstChild;
-	aElement.expanded = true;
-	// Change img class name
-	var imgElement = aElement.firstChild;
-	imgElement.className = "expanded";
-};
-
-/*
- * Build directory.
- */
-var buildDirectory = function (directory, depth) {
-	/*
-	 * Create root div element.
-	 */
-	// Create div element
-	var divElement = document.createElement("div");
-	// Set identifier as path
-	divElement.id = directory.path;
-	// Mark as not selected
-	divElement.isSelected = false;
-	// Add padding related to depth
-	divElement.style = "margin-left: " + (depth * 20) + "px;";
-	/*
-	 * Create a element.
-	 */
-	// Create a element
-	var aElement = document.createElement("a");
-	// Set link as empty anchor
-	aElement.href = "#";
-	// Mark as not expanded
-	aElement.expanded = false;
-	// Add onclick behavior
-	aElement.onclick = function () {
-		// Check expanded status
-		if (aElement.expanded) {
-			// Clear directory
-			clearDirectory(aElement.parentNode);
-		} else {
-			// Explore directory
-			explore(directory.path);
-		}
-	};
-	// Append a element to root div element
-	divElement.appendChild(aElement);
-	/*
-	 * Create icon div element.
-	 */
-	// Create icon div element
-	var iconDivElement = document.createElement("div");
-	// Set default class name as contracted
-	iconDivElement.className = "contracted";
-	// Append icon div element to a element
-	aElement.appendChild(iconDivElement);
-	/*
-	 * Create label div element.
-	 */
-	// Create label div element
-	var labelDivElement = document.createElement("div");
-	// Set display style
-	labelDivElement.style = "display: inline;";
-	// Set content as directory name
-	labelDivElement.innerHTML = directory.name;
-	// Add onclick behavior
-	labelDivElement.onclick = function () {
-		// Select directory
-		selectDirectory(labelDivElement.parentNode);
+	// Get the depth of the path
+	var depth = fileSystem.computeDepth(path);
+	if (depth===0)
+		// Add nodes on root node
+		w2ui.fileSystem.add(nodes);
+	else  {
+		// Add nodes to parent node
+		w2ui.fileSystem.add(path, nodes);
+		// Expand parent node
+		w2ui.fileSystem.expand(path);
 	}
-	// Append label div element to root div element
-	divElement.appendChild(labelDivElement);
-	// Return root div element
-	return divElement;
-};
-
-/*
- * Select a directory.
- */
-var selectDirectory = function (directoryElement) {
-	// Check current selected path
-	if (selectedPath !== null) {
-		// Get related selected element
-		var selectedDirectoryElement = document.getElementById(selectedPath);
-		if (selectedDirectoryElement !== null) {
-			// Mark as not selected
-			selectedDirectoryElement.isSelected = false;
-			// Remove class name
-			selectedDirectoryElement.className = "";
-		}
-	}
-	// Mark as selected
-	directoryElement.isSelected = true;
-	// Add selected class name
-	directoryElement.className = "selected";
-	// Save selected path
-	selectedPath = directoryElement.id;
-};
-
-/*
- * Clear a directory content.
- */
-var clearDirectory = function (directoryElement) {
-	// Get directory element children
-	var children = directoryElement.childNodes;
-	// Check if root must be kept
-	var keepChildren = directoryElement.id === "filesystem" ? 0 : 2;
-	// Remove children
-	while (children.length > keepChildren) {
-		directoryElement.removeChild(children[keepChildren]);
-	}
-	// Check children to update
-	if (keepChildren > 0) {
-		// Change a element expanded status
-		var aElement = directoryElement.firstChild;
-		aElement.expanded = false;
-		// Change icon div class name
-		var iconDivElement = aElement.firstChild;
-		iconDivElement.className = "contracted";
-	}
-};
+}
 
 /*
  * Explore a path.
  */
 var explore = function (path) {
 	// Send a message to list content of a path
-	self.port.emit("ls", path);
+	window.postMessage({
+		action: 'ls',
+		path: path
+	}, '*');
 };
 
 /*
  * Valid the selected path.
  */
 var valid = function () {
-	// Check selected path
-	if (selectedPath === null)
+	// Get selected path
+	var selectedPath = w2ui.fileSystem.selected;
+	if (selectedPath === '')
 		return;
 	// Send add-on message to select path
-	self.port.emit("select", selectedPath);
+	window.postMessage({
+		action: 'select',
+		path: selectedPath
+	}, '*');
 };
 
 /*
  * Cancel the dialog.
  */
-var cancel = function() {
+var cancel = function () {
 	// Send add-on message to close panel
-	self.port.emit("cancel");
+	window.postMessage({
+		action: 'cancel'
+	}, '*');
 };
-
-var dump = function (variable, filter) {
-	self.port.emit("dump", variable, filter);
-};
-
-/*
- * Initialize control action.
- */
-// Get select element
-var selectElement = document.getElementById("select");
-// Add select action
-selectElement.onclick = valid;
-// Get cancel element
-var cancelElement = document.getElementById("cancel");
-// Add cancel action
-cancelElement.onclick = cancel;
 
 /*
  * Create message reception.
  */
-// Create ls message receiver
-self.port.on("ls", function (path, content) {
-	fileSystem.add(path, content);
-	buildExplorer(path, fileSystem.computeDepth(path));
+// Create render message receiver
+window.addEventListener('message', function(event) {
+	// Check event data action
+	if (typeof event.data.action === undefined)
+		return;
+	// Check render action
+	if (event.data.action === 'render') {
+		// Get path and content to render
+		var path = event.data.path;
+		var content = event.data.content;
+		// Add content to file system
+		fileSystem.add(path, content);
+		// Render path
+		buildExplorer(path);
+		return;
+	}
+	// Check show action
+	if (event.data.action === 'show' && typeof event.data.path === 'string') {
+		// Get related node
+		var node = event.data.path;
+		// Select the node
+		w2ui.fileSystem.select(node);
+		// Ensure the node is visible
+		w2ui.fileSystem.scrollIntoView(node);
+	}
+}, false);
+
+// Create browser panel configuration
+var config = {
+	// Create layout configuration
+	layout: {
+		name: 'explorer',
+		panels: [
+			{
+				type: 'top',
+				size: 30
+			},
+			{
+				type: 'main'
+			},
+			{
+				type: 'bottom',
+				size: 30
+			}
+		]
+	},
+	// Create sidebar configuration
+	sidebar: {
+		name: 'fileSystem',
+		img: null,
+		nodes: [],
+		onClick: function (event) {
+			// Get clicked path
+			var path = event.target;
+			// Get clicked node
+			var node = w2ui.fileSystem.get(path);
+			// Check node children
+			if (node.nodes.length == 0) {
+				// Explore path
+				explore(path);
+			}
+		}
+	},
+	// Create control bar configuration
+	controlbar: {
+		name: 'controls',
+		items: [
+			{
+				type: 'button',
+				id: 'select',
+				caption: 'Sélectionner',
+				hint: 'Sélectionner le dossier de téléchargement'
+			},
+			{
+				type: 'button',
+				id: 'cancel',
+				caption: 'Annuler',
+				hint: 'Annuler la sélection'
+			}
+		],
+		onClick: function (event) {
+			// Check select target
+			if (event.target === 'select') {
+				// Valid user selection
+				valid();
+				return;
+			}
+			// Check cancel target
+			if (event.target === 'cancel') {
+				// Cancel panel
+				cancel();
+				return;
+			}
+		}
+	}
+};
+
+/*
+ * Initialize browser panel.
+ */
+$(function () {
+	// Create panel layout
+	$('#fileSystem').w2layout(config.layout);
+	// Add panel header
+	w2ui.explorer.content('top', 'Explorer :');
+	// Add panel file explorer
+	w2ui.explorer.content('main', $().w2sidebar(config.sidebar));
+	// Add panel controls
+	w2ui.explorer.content('bottom', $().w2toolbar(config.controlbar));
 });
+
+var dump = function (variable) {
+	for (var index in variable) {
+		try {
+			window.postMessage({
+				action: 'dump',
+				key: index,
+				value: variable[index]
+			}, '*');
+		} catch (error) {
+			window.postMessage({
+				action: 'dump',
+				key: index,
+				value: 'not clonable'
+			}, '*');
+		}
+	}
+}
