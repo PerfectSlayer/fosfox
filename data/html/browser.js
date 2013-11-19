@@ -195,10 +195,6 @@ var config = {
 		name: 'explorer',
 		panels: [
 			{
-				type: 'top',
-				size: 30
-			},
-			{
 				type: 'main'
 			},
 			{
@@ -316,8 +312,6 @@ var config = {
 $(function () {
 	// Create panel layout
 	$('#fileSystem').w2layout(config.layout);
-	// Add panel header
-	w2ui.explorer.content('top', 'Explorer :');
 	// Add panel file explorer
 	w2ui.explorer.content('main', $().w2sidebar(config.sidebar));
 	// Add panel controls
