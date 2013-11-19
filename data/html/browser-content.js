@@ -33,6 +33,12 @@ window.addEventListener('message', function(event) {
 		self.port.emit('ls', event.data.path);
 		return;
 	}
+	// Check mkdir action
+	if (event.data.action === 'mkdir' && typeof event.data.parent === 'string' && typeof event.data.dirname === 'string') {
+		// Send mkdir message to main.js
+		self.port.emit('mkdir', event.data.parent, event.data.dirname);
+		return;
+	}
 	// Check select action
 	if (event.data.action === 'select' && typeof event.data.path === 'string') {
 		// Send select message to main.js

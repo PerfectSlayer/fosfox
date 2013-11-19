@@ -109,6 +109,56 @@ var cancel = function () {
 };
 
 /*
+ * Display UI to create directory.
+ */
+var mkdir = function () {
+	// Hide default toolbar element for directory creation
+	w2ui['controls'].hide('mkdir');
+	// Show toolbar elements for directory creation
+	w2ui['controls'].show('mkdir-name');
+	w2ui['controls'].show('mkdir-confirm');
+	w2ui['controls'].show('mkdir-cancel');
+	// Request focus on input field
+	$('#mkdir-name').focus();
+}
+
+/*
+ * Hide UI to create directory.
+ */
+var mkdirCancel = function () {
+	// Reset directory name
+	$('#mkdir-name').val('');
+	// Hide toolbar elements for directory creation
+	w2ui['controls'].hide('mkdir-name');
+	w2ui['controls'].hide('mkdir-confirm');
+	w2ui['controls'].hide('mkdir-cancel');
+	// Show default toolbar element for directory creation
+	w2ui['controls'].show('mkdir');
+};
+
+/*
+ * Create a directory.
+ */
+var mkdirConfirm = function () {
+	// Get selected path
+	var selectedPath = w2ui.fileSystem.selected;
+	if (selectedPath === '')
+		return;
+	// Get directory name
+	var dirname = $('#mkdir-name').val();
+	// Send add-on message to create directory
+	window.postMessage({
+		action: 'mkdir',
+		parent: selectedPath,
+		dirname: dirname
+	}, '*');
+	// Hide UI to create directory
+	mkdirCancel();
+	// Update selected path content
+	explore(selectedPath);
+};
+
+/*
  * Create message reception.
  */
 // Create render message receiver
@@ -180,28 +230,80 @@ var config = {
 		items: [
 			{
 				type: 'button',
-				id: 'select',
-				caption: 'Sélectionner',
-				hint: 'Sélectionner le dossier de téléchargement'
+				id: 'mkdir',
+				caption: 'Nouveau dossier',
+				img: 'icon-folder',
+				hint: 'Créer un nouveau dossier'
+			},
+			{
+				type: 'html',
+				id: 'mkdir-name',
+				html: '<div style="padding: 3px 10px;">Nom : <input id="mkdir-name" size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/></div>',
+				hidden: true
+			},
+			{
+				type: 'button',
+				id: 'mkdir-confirm',
+				caption: 'Créer',
+				img: 'icon-folder',
+				hint: 'Créer le nouveau dossier',
+				hidden: true
+			},
+			{
+				type: 'button',
+				id: 'mkdir-cancel',
+				caption: 'annuler',
+				img: 'icon-delete',
+				hint: 'Annuler la création',
+				hidden: true
+			},
+			{
+				type: 'spacer'
 			},
 			{
 				type: 'button',
 				id: 'cancel',
 				caption: 'Annuler',
+				img: 'icon-delete',
 				hint: 'Annuler la sélection'
+			},
+			{
+				type: 'button',
+				id: 'select',
+				caption: 'Sélectionner',
+				img: 'icon-save',
+				hint: 'Sélectionner le dossier de téléchargement'
 			}
 		],
 		onClick: function (event) {
-			// Check select target
-			if (event.target === 'select') {
-				// Valid user selection
-				valid();
+			// Check mkdir target
+			if (event.target === 'mkdir') {
+				// Display UI to create directory
+				mkdir();
+				return;
+			}
+			// Check mkdir-confirm target
+			if (event.target === 'mkdir-confirm') {
+				// Create directory
+				mkdirConfirm();
+				return;
+			}
+			// Check mkdir-cancel target
+			if (event.target === 'mkdir-cancel') {
+				// Hide UI to create directory
+				mkdirCancel();
 				return;
 			}
 			// Check cancel target
 			if (event.target === 'cancel') {
 				// Cancel panel
 				cancel();
+				return;
+			}
+			// Check select target
+			if (event.target === 'select') {
+				// Valid user selection
+				valid();
 				return;
 			}
 		}
