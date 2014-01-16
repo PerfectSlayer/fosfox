@@ -20,6 +20,12 @@ var fileSystem = {
 		return this.root[path];
 	},
 	/*
+	 * Format the file system.
+	 */
+	format: function () {
+		this.root = {};
+	},
+	/*
 	 * Compute depth of a path.
 	 */
 	computeDepth: function (path) {
@@ -166,6 +172,16 @@ window.addEventListener('message', function(event) {
 	// Check event data action
 	if (typeof event.data.action === undefined)
 		return;
+	// Check clear action
+	if (event.data.action === 'clear') {
+		// Format current file system
+		fileSystem.format();
+		// Remove each entry of the file system explorer
+		for (var index in w2ui.fileSystem.nodes) {
+			var node = w2ui.fileSystem.nodes[index];
+			w2ui.fileSystem.remove(node.id);
+		}
+	}
 	// Check render action
 	if (event.data.action === 'render') {
 		// Get path and content to render

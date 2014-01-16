@@ -1,6 +1,13 @@
 /*
  * Create message reception from main.js.
  */
+// Create clear message receiver
+self.port.on('clear', function () {
+	// Send a message to page script to clear previous tree
+	document.defaultView.postMessage({
+		action: 'clear'
+	}, '*');
+});
 // Create render message receiver
 self.port.on('render', function (path, content) {
 	// Send a message to page script to render ls result
