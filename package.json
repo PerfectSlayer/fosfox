@@ -4,6 +4,8 @@
   "id": "jid1-K5L1GyrEhdR34g",
   "description": "Téléchargement par Freebox OS",
   "author": "Bruce Bujon (Perfect Slayer)",
+  "icon": "data/images/icon.png",
+  "icon64": "data/images/icon64.png",
   "license": "Apache 2.0",
-  "version": "0.3"
+  "version": "0.4"
 }
