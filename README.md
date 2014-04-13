@@ -14,5 +14,14 @@ Location chooser:
 
 ![Location chooser](http://hardcoding.free.fr/blog/fosfox/location_chooser.png)
 
+## How to build
+Fosfox is still in developpemnt so no stable build must be proposed to [AMO](https://addons.mozilla.org) for the now.
+It is a Jetpack addon so you need to [install Jetpack SDK](https://developer.mozilla.org/en-US/Add-ons/SDK/Tutorials/Installation) to build the addon. Then you could make a build in activating the SDK and packing the addon with:
+```Shell
+bin/activate
+cfx xpi
+```
+
+
 ## Known issues
 At a periodic rate (average a week ?), Freebox OS decline any authenticated call. Please log once into [Freebox OS](http://mafreebox.freebox.fr/) to work around the issue.
