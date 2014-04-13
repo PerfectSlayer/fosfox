@@ -7,10 +7,12 @@ You can add files or torrents to the download manager and choose where to store 
 
 ## Screenshots
 Download dialog:
-![http://hardcoding.free.fr/blog/fosfox/download_dialog.png]
+
+![Download dialog](http://hardcoding.free.fr/blog/fosfox/download_dialog.png)
 
 Location chooser:
-![http://hardcoding.free.fr/blog/fosfox/location_chooser.png]
+
+![Location chooser](http://hardcoding.free.fr/blog/fosfox/location_chooser.png)
 
 ## Known issues
 At a periodic rate (average a week ?), Freebox OS decline any authenticated call. Please log once into [Freebox OS](http://mafreebox.freebox.fr/) to work around the issue.
