@@ -1,11 +1,12 @@
 {
-  "name": "freeboxos",
-  "fullName": "Freebox OS",
+  "name": "fosfox",
+  "title": "Freebox OS for Firefox",
   "id": "jid1-K5L1GyrEhdR34g",
-  "description": "Téléchargement par Freebox OS",
+  "description": "Intégration des téléchargements dans la Freebox Révolution (Freebox OS)",
   "author": "Bruce Bujon (Perfect Slayer)",
   "icon": "data/images/icon.png",
   "icon64": "data/images/icon64.png",
-  "license": "Apache 2.0",
+  "homepage": "http://blog.hardcoding.fr/other-projects/",
+  "license": "GPL v3",
   "version": "0.4"
 }
