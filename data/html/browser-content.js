@@ -47,9 +47,9 @@ window.addEventListener('message', function(event) {
 		return;
 	}
 	// Check select action
-	if (event.data.action === 'select' && typeof event.data.path === 'string') {
+	if (event.data.action === 'select' && typeof event.data.path === 'string' && typeof event.data.remember === 'boolean') {
 		// Send select message to main.js
-		self.port.emit('select', event.data.path);
+		self.port.emit('select', event.data.path, event.data.remember);
 		return;
 	}
 	// Check cancel action

@@ -8,7 +8,7 @@
   "icon64": "data/images/icon64.png",
   "homepage": "http://blog.hardcoding.fr/other-projects/",
   "license": "GPL v3",
-  "version": "0.4",
+  "version": "0.5",
   "preferences": [
     {
       "name": "locationStrategy",
@@ -18,7 +18,7 @@
       "value": "learn",
       "options": [
         {
-          "value": "alwaysask",
+          "value": "alwaysAsk",
           "label": "Toujours demander"
         },
         {
@@ -26,13 +26,20 @@
           "label": "Enregistrer d'après le site"
         },
         {
-          "value": "usedefault",
+          "value": "useDefault",
           "label": "Utiliser le dossier par défaut"
         }
       ]
     },
     {
       "name": "defaultLocation",
+      "title": "La destination par défault des téléchargements",
+      "type": "string",
+      "value": "",
+      "hidden": true
+    },
+    {
+      "name": "defaultLocationControl",
       "title": "La destination par défault des téléchargements",
       "description": "Le dossier où iront tous les téléchargement si le dossier par défaut est utilisé comme distination",
       "type": "control",

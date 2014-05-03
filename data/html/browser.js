@@ -100,7 +100,8 @@ var valid = function () {
 	// Send add-on message to select path
 	window.postMessage({
 		action: 'select',
-		path: selectedPath
+		path: selectedPath,
+		remember: w2ui['controls'].get('remember').checked
 	}, '*');
 };
 
@@ -264,13 +265,22 @@ var config = {
 			{
 				type: 'button',
 				id: 'mkdir-cancel',
-				caption: 'annuler',
+				caption: 'Annuler',
 				img: 'icon-delete',
 				hint: 'Annuler la création',
 				hidden: true
 			},
 			{
 				type: 'spacer'
+			},
+			{
+				type: 'check',
+				id: 'remember',
+				caption: 'Mémoriser'
+			},
+			{
+				type: 'break',
+				id: 'break'
 			},
 			{
 				type: 'button',
