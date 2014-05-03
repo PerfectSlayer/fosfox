@@ -8,5 +8,35 @@
   "icon64": "data/images/icon64.png",
   "homepage": "http://blog.hardcoding.fr/other-projects/",
   "license": "GPL v3",
-  "version": "0.4"
+  "version": "0.4",
+  "preferences": [
+    {
+      "name": "locationStrategy",
+      "title": "Destination des téléchargements",
+      "description": "Définition de la destination des téléchargements.",
+      "type": "radio",
+      "value": "learn",
+      "options": [
+        {
+          "value": "alwaysask",
+          "label": "Toujours demander"
+        },
+        {
+          "value": "learn",
+          "label": "Enregistrer d'après le site"
+        },
+        {
+          "value": "usedefault",
+          "label": "Utiliser le dossier par défaut"
+        }
+      ]
+    },
+    {
+      "name": "defaultLocation",
+      "title": "La destination par défault des téléchargements",
+      "description": "Le dossier où iront tous les téléchargement si le dossier par défaut est utilisé comme distination",
+      "type": "control",
+      "label": "Définir"
+    }
+  ]
 }
