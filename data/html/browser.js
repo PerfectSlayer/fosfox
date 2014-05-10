@@ -168,7 +168,7 @@ var mkdirConfirm = function () {
 /*
  * Create message reception.
  */
-// Create render message receiver
+// Create message receiver
 window.addEventListener('message', function(event) {
 	// Check event data action
 	if (typeof event.data.action === undefined)
@@ -184,7 +184,7 @@ window.addEventListener('message', function(event) {
 		}
 	}
 	// Check render action
-	if (event.data.action === 'render') {
+	else if (event.data.action === 'render') {
 		// Get path and content to render
 		var path = event.data.path;
 		var content = event.data.content;
@@ -192,10 +192,9 @@ window.addEventListener('message', function(event) {
 		fileSystem.add(path, content);
 		// Render path
 		buildExplorer(path);
-		return;
 	}
 	// Check show action
-	if (event.data.action === 'show' && typeof event.data.path === 'string') {
+	else if (event.data.action === 'show' && typeof event.data.path === 'string') {
 		// Get related node
 		var node = event.data.path;
 		// Select the node
