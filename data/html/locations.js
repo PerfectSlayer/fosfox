@@ -56,7 +56,8 @@ window.addEventListener('message', function(event) {
 			w2ui.grid.records.push({
 				'recid': index++,
 				'site': site,
-				'location': locations[site]
+				'location': locations[site].path,
+				'always': locations[site].always ? "Oui" : "Non"
 			});
 		}
 		// Update the grid
@@ -94,7 +95,14 @@ $(function () {
 			{
 				field: 'location',
 				caption: 'Destination',
-				size: '60%',
+				size: '50%',
+				resizable: true,
+				sortable: true
+			},
+			{
+				field: 'always',
+				caption: 'Toujours',
+				size: '10%',
 				resizable: true,
 				sortable: true
 			}

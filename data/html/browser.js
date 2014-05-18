@@ -201,6 +201,8 @@ window.addEventListener('message', function(event) {
 		w2ui.fileSystem.select(node);
 		// Ensure the node is visible
 		w2ui.fileSystem.scrollIntoView(node);
+		// Reset remember control
+		w2ui['controls'].uncheck('remember');
 	}
 }, false);
 
