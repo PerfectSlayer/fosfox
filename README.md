@@ -18,10 +18,11 @@ Location chooser:
 Fosfox is still in developpemnt so no stable build must be proposed to [AMO](https://addons.mozilla.org) for the now.
 It is a Jetpack addon so you need to [install Jetpack SDK](https://developer.mozilla.org/en-US/Add-ons/SDK/Tutorials/Installation) to build the addon. Then you could make a build in activating the SDK and packing the addon with:
 ```Shell
+cd jetpack-directory
 bin/activate
+cd fosfox-directory
 cfx xpi
 ```
 
-
-## Known issues
-At a periodic rate (average a week ?), Freebox OS decline any authenticated call. Please log once into [Freebox OS](http://mafreebox.freebox.fr/) to work around the issue.
+## Development build
+For early testers, you may have a look to [the development build](http://hardcoding.free.fr/blog/fosfox/fosfox.xpi) to give a try to this extension. Don't hesitate to post issue for bug, improvement or feature requests.
