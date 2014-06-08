@@ -177,6 +177,10 @@ window.addEventListener('message', function(event) {
 	if (event.data.action === 'clear') {
 		// Format current file system
 		fileSystem.format();
+		// Unselect node
+		var selectedNode = w2ui.fileSystem.selected;
+		if (selectedNode != '')
+			w2ui.fileSystem.unselect(selectedNode);
 		// Remove each entry of the file system explorer
 		for (var index in w2ui.fileSystem.nodes) {
 			var node = w2ui.fileSystem.nodes[index];
