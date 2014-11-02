@@ -100,7 +100,8 @@ var valid = function () {
 	// Send add-on message to select path
 	window.postMessage({
 		action: 'select',
-		path: selectedPath
+		path: selectedPath,
+		remember: w2ui['controls'].get('remember').checked
 	}, '*');
 };
 
@@ -167,7 +168,7 @@ var mkdirConfirm = function () {
 /*
  * Create message reception.
  */
-// Create render message receiver
+// Create message receiver
 window.addEventListener('message', function(event) {
 	// Check event data action
 	if (typeof event.data.action === undefined)
@@ -176,6 +177,10 @@ window.addEventListener('message', function(event) {
 	if (event.data.action === 'clear') {
 		// Format current file system
 		fileSystem.format();
+		// Unselect node
+		var selectedNode = w2ui.fileSystem.selected;
+		if (selectedNode != '')
+			w2ui.fileSystem.unselect(selectedNode);
 		// Remove each entry of the file system explorer
 		for (var index in w2ui.fileSystem.nodes) {
 			var node = w2ui.fileSystem.nodes[index];
@@ -183,7 +188,7 @@ window.addEventListener('message', function(event) {
 		}
 	}
 	// Check render action
-	if (event.data.action === 'render') {
+	else if (event.data.action === 'render') {
 		// Get path and content to render
 		var path = event.data.path;
 		var content = event.data.content;
@@ -191,16 +196,17 @@ window.addEventListener('message', function(event) {
 		fileSystem.add(path, content);
 		// Render path
 		buildExplorer(path);
-		return;
 	}
 	// Check show action
-	if (event.data.action === 'show' && typeof event.data.path === 'string') {
+	else if (event.data.action === 'show' && typeof event.data.path === 'string') {
 		// Get related node
 		var node = event.data.path;
 		// Select the node
 		w2ui.fileSystem.select(node);
 		// Ensure the node is visible
 		w2ui.fileSystem.scrollIntoView(node);
+		// Reset remember control
+		w2ui['controls'].uncheck('remember');
 	}
 }, false);
 
@@ -264,13 +270,22 @@ var config = {
 			{
 				type: 'button',
 				id: 'mkdir-cancel',
-				caption: 'annuler',
+				caption: 'Annuler',
 				img: 'icon-delete',
 				hint: 'Annuler la création',
 				hidden: true
 			},
 			{
 				type: 'spacer'
+			},
+			{
+				type: 'check',
+				id: 'remember',
+				caption: 'Mémoriser'
+			},
+			{
+				type: 'break',
+				id: 'break'
 			},
 			{
 				type: 'button',
