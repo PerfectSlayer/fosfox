@@ -8,7 +8,7 @@
   "icon64": "data/images/icon64.png",
   "homepage": "http://blog.hardcoding.fr/other-projects/",
   "license": "GPL v3",
-  "version": "0.6",
+  "version": "0.7",
   "preferences": [
     {
       "name": "locationStrategy",
