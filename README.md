@@ -4,6 +4,7 @@
 Fosfox is a Firefox extension to connect Freebox download manager to Firefox.
 It allows to download visited links from Firefox directly on your Freebox Revolution server.
 You can add files or torrents to the download manager and choose where to store it.
+While downloading, it displays the ETA of your downloads.
 
 ## Screenshots
 Download dialog:
@@ -25,4 +26,4 @@ cfx xpi
 ```
 
 ## Development build
-For early testers, you may have a look to [the development build](http://hardcoding.free.fr/blog/fosfox/fosfox.xpi) to give a try to this extension. Don't hesitate to post issue for bug, improvement or feature requests.
+For early testers, you may have a look to [the development build on realease page](https://github.com/PerfectSlayer/fosfox/releases) to give a try to this extension. Don't hesitate to post issue for bug, improvement or feature request.
