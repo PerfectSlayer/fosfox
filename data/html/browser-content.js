@@ -2,14 +2,14 @@
  * Create message reception from main.js.
  */
 // Create clear message receiver
-self.port.on('clear', function () {
+self.port.on('clear', function() {
 	// Send a message to page script to clear previous tree
 	document.defaultView.postMessage({
 		action: 'clear'
 	}, '*');
 });
 // Create render message receiver
-self.port.on('render', function (path, content) {
+self.port.on('render', function(path, content) {
 	// Send a message to page script to render ls result
 	document.defaultView.postMessage({
 		action: 'render',
@@ -18,11 +18,12 @@ self.port.on('render', function (path, content) {
 	}, '*');
 });
 // Create select message receiver
-self.port.on('show', function (path) {
+self.port.on('show', function(path, remember) {
 	// Send a message to page script to show the path
 	document.defaultView.postMessage({
 		action: 'show',
-		path: path
+		path: path,
+		remember: remember
 	}, '*');
 });
 
@@ -59,7 +60,7 @@ window.addEventListener('message', function(event) {
 		return;
 	}
 	if (event.data.action === 'dump') {
-		console.log(event.data.key + ' ' +event.data.value);
+		console.log(event.data.key + ' ' + event.data.value);
 		return;
 	}
 }, false);

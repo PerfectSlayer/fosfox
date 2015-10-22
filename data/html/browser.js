@@ -10,25 +10,25 @@ var fileSystem = {
 	/*
 	 * Add file to file system.
 	 */
-	add: function (path, content) {
+	add: function(path, content) {
 		this.root[path] = content;
 	},
 	/*
 	 * Get content of a file.
 	 */
-	get: function (path) {
+	get: function(path) {
 		return this.root[path];
 	},
 	/*
 	 * Format the file system.
 	 */
-	format: function () {
+	format: function() {
 		this.root = {};
 	},
 	/*
 	 * Compute depth of a path.
 	 */
-	computeDepth: function (path) {
+	computeDepth: function(path) {
 		// Get content of the path
 		var content = this.get(path);
 		// Check if path contains at least two items (. and ..)
@@ -45,7 +45,7 @@ var fileSystem = {
 /*
  * Build explorer.
  */
-var buildExplorer = function (path) {
+var buildExplorer = function(path) {
 	// Get path content
 	var directory = fileSystem.get(path);
 	if (directory === undefined)
@@ -67,10 +67,10 @@ var buildExplorer = function (path) {
 	}
 	// Get the depth of the path
 	var depth = fileSystem.computeDepth(path);
-	if (depth===0)
-		// Add nodes on root node
+	if (depth === 0) {
+	// Add nodes on root node
 		w2ui.fileSystem.add(nodes);
-	else  {
+	} else {
 		// Add nodes to parent node
 		w2ui.fileSystem.add(path, nodes);
 		// Expand parent node
@@ -81,7 +81,7 @@ var buildExplorer = function (path) {
 /*
  * Explore a path.
  */
-var explore = function (path) {
+var explore = function(path) {
 	// Send a message to list content of a path
 	window.postMessage({
 		action: 'ls',
@@ -92,7 +92,7 @@ var explore = function (path) {
 /*
  * Valid the selected path.
  */
-var valid = function () {
+var valid = function() {
 	// Get selected path
 	var selectedPath = w2ui.fileSystem.selected;
 	if (selectedPath === '')
@@ -108,7 +108,7 @@ var valid = function () {
 /*
  * Cancel the dialog.
  */
-var cancel = function () {
+var cancel = function() {
 	// Send add-on message to close panel
 	window.postMessage({
 		action: 'cancel'
@@ -118,7 +118,7 @@ var cancel = function () {
 /*
  * Display UI to create directory.
  */
-var mkdir = function () {
+var mkdir = function() {
 	// Hide default toolbar element for directory creation
 	w2ui['controls'].hide('mkdir');
 	// Show toolbar elements for directory creation
@@ -132,7 +132,7 @@ var mkdir = function () {
 /*
  * Hide UI to create directory.
  */
-var mkdirCancel = function () {
+var mkdirCancel = function() {
 	// Reset directory name
 	$('#mkdir-name').val('');
 	// Hide toolbar elements for directory creation
@@ -146,7 +146,7 @@ var mkdirCancel = function () {
 /*
  * Create a directory.
  */
-var mkdirConfirm = function () {
+var mkdirConfirm = function() {
 	// Get selected path
 	var selectedPath = w2ui.fileSystem.selected;
 	if (selectedPath === '')
@@ -198,15 +198,20 @@ window.addEventListener('message', function(event) {
 		buildExplorer(path);
 	}
 	// Check show action
-	else if (event.data.action === 'show' && typeof event.data.path === 'string') {
-		// Get related node
+	else if (event.data.action === 'show' && typeof event.data.path === 'string' && typeof event.data.remember === 'boolean') {
+		// Get related node and remember status
 		var node = event.data.path;
+		var remember = event.data.remember;
 		// Select the node
 		w2ui.fileSystem.select(node);
 		// Ensure the node is visible
 		w2ui.fileSystem.scrollIntoView(node);
-		// Reset remember control
-		w2ui['controls'].uncheck('remember');
+		// Set remember control
+		if (remember) {
+			w2ui['controls'].check('remember');
+		} else {
+			w2ui['controls'].uncheck('remember');
+		}
 	}
 }, false);
 
@@ -215,22 +220,19 @@ var config = {
 	// Create layout configuration
 	layout: {
 		name: 'explorer',
-		panels: [
-			{
-				type: 'main'
-			},
-			{
-				type: 'bottom',
-				size: 30
-			}
-		]
+		panels: [{
+			type: 'main'
+		}, {
+			type: 'bottom',
+			size: 30
+		}]
 	},
 	// Create sidebar configuration
 	sidebar: {
 		name: 'fileSystem',
 		img: null,
 		nodes: [],
-		onClick: function (event) {
+		onClick: function(event) {
 			// Get clicked path
 			var path = event.target;
 			// Get clicked node
@@ -245,64 +247,54 @@ var config = {
 	// Create control bar configuration
 	controlbar: {
 		name: 'controls',
-		items: [
-			{
-				type: 'button',
-				id: 'mkdir',
-				caption: 'Nouveau dossier',
-				img: 'icon-folder',
-				hint: 'Créer un nouveau dossier'
-			},
-			{
-				type: 'html',
-				id: 'mkdir-name',
-				html: '<div style="padding: 3px 10px;">Nom : <input id="mkdir-name" size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/></div>',
-				hidden: true
-			},
-			{
-				type: 'button',
-				id: 'mkdir-confirm',
-				caption: 'Créer',
-				img: 'icon-folder',
-				hint: 'Créer le nouveau dossier',
-				hidden: true
-			},
-			{
-				type: 'button',
-				id: 'mkdir-cancel',
-				caption: 'Annuler',
-				img: 'icon-delete',
-				hint: 'Annuler la création',
-				hidden: true
-			},
-			{
-				type: 'spacer'
-			},
-			{
-				type: 'check',
-				id: 'remember',
-				caption: 'Mémoriser'
-			},
-			{
-				type: 'break',
-				id: 'break'
-			},
-			{
-				type: 'button',
-				id: 'cancel',
-				caption: 'Annuler',
-				img: 'icon-delete',
-				hint: 'Annuler la sélection'
-			},
-			{
-				type: 'button',
-				id: 'select',
-				caption: 'Sélectionner',
-				img: 'icon-save',
-				hint: 'Sélectionner le dossier de téléchargement'
-			}
-		],
-		onClick: function (event) {
+		items: [{
+			type: 'button',
+			id: 'mkdir',
+			caption: 'Nouveau dossier',
+			img: 'icon-folder',
+			hint: 'Créer un nouveau dossier'
+		}, {
+			type: 'html',
+			id: 'mkdir-name',
+			html: '<div style="padding: 3px 10px;">Nom : <input id="mkdir-name" size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/></div>',
+			hidden: true
+		}, {
+			type: 'button',
+			id: 'mkdir-confirm',
+			caption: 'Créer',
+			img: 'icon-folder',
+			hint: 'Créer le nouveau dossier',
+			hidden: true
+		}, {
+			type: 'button',
+			id: 'mkdir-cancel',
+			caption: 'Annuler',
+			img: 'icon-delete',
+			hint: 'Annuler la création',
+			hidden: true
+		}, {
+			type: 'spacer'
+		}, {
+			type: 'check',
+			id: 'remember',
+			caption: 'Mémoriser'
+		}, {
+			type: 'break',
+			id: 'break'
+		}, {
+			type: 'button',
+			id: 'cancel',
+			caption: 'Annuler',
+			img: 'icon-delete',
+			hint: 'Annuler la sélection'
+		}, {
+			type: 'button',
+			id: 'select',
+			caption: 'Sélectionner',
+			img: 'icon-save',
+			hint: 'Sélectionner le dossier de téléchargement'
+		}],
+		onClick: function(event) {
 			// Check mkdir target
 			if (event.target === 'mkdir') {
 				// Display UI to create directory
@@ -340,7 +332,7 @@ var config = {
 /*
  * Initialize browser panel.
  */
-$(function () {
+$(function() {
 	// Create panel layout
 	$('#fileSystem').w2layout(config.layout);
 	// Add panel file explorer
@@ -349,7 +341,7 @@ $(function () {
 	w2ui.explorer.content('bottom', $().w2toolbar(config.controlbar));
 });
 
-var dump = function (variable) {
+var dump = function(variable) {
 	for (var index in variable) {
 		try {
 			window.postMessage({
