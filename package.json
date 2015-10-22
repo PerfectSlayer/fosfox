@@ -1,56 +1,47 @@
 {
-  "name": "fosfox",
-  "title": "Freebox OS for Firefox",
-  "id": "jid1-K5L1GyrEhdR34g",
-  "description": "Intégration des téléchargements dans la Freebox Révolution (Freebox OS)",
-  "author": "Bruce Bujon (Perfect Slayer)",
-  "icon": "data/images/icon.png",
-  "icon64": "data/images/icon64.png",
-  "homepage": "http://blog.hardcoding.fr/other-projects/",
-  "license": "GPL v3",
-  "version": "0.7.3",
-  "preferences": [
-    {
-      "name": "locationStrategy",
-      "title": "Destination des téléchargements",
-      "description": "Définition de la destination des téléchargements.",
-      "type": "radio",
-      "value": "learn",
-      "options": [
-        {
-          "value": "alwaysAsk",
-          "label": "Toujours demander"
-        },
-        {
-          "value": "learn",
-          "label": "Enregistrer en fonction du site"
-        },
-        {
-          "value": "useDefault",
-          "label": "Utiliser la destination par défaut"
-        }
-      ]
-    },
-    {
-      "name": "defaultLocation",
-      "title": "La destination par défault des téléchargements",
-      "type": "string",
-      "value": "",
-      "hidden": true
-    },
-    {
-      "name": "defaultLocationControl",
-      "title": "Destination par défault",
-      "description": "Le dossier où iront tous les téléchargements par défaut.",
-      "type": "control",
-      "label": "Définir"
-    },
-    {
-      "name": "locations",
-      "title": "Destinations enregistrées",
-      "description": "La liste des destinations enregistrées",
-      "type": "control",
-      "label": "Modifier"
-    }
-  ]
+	"name": "fosfox",
+	"title": "Freebox OS for Firefox",
+	"id": "jid1-K5L1GyrEhdR34g",
+	"description": "Intégration des téléchargements dans la Freebox Révolution (Freebox OS)",
+	"author": "Bruce Bujon (Perfect Slayer)",
+	"icon": "data/images/icon.png",
+	"icon64": "data/images/icon64.png",
+	"homepage": "http://blog.hardcoding.fr/other-projects/",
+	"license": "GPL v3",
+	"version": "0.8.0",
+	"preferences": [{
+		"name": "locationStrategy",
+		"title": "Destination des téléchargements",
+		"description": "Définition de la destination des téléchargements.",
+		"type": "radio",
+		"value": "learn",
+		"options": [{
+			"value": "alwaysAsk",
+			"label": "Toujours demander"
+		}, {
+			"value": "learn",
+			"label": "Enregistrer en fonction du site"
+		}, {
+			"value": "useDefault",
+			"label": "Utiliser la destination par défaut"
+		}]
+	}, {
+		"name": "defaultLocation",
+		"title": "La destination par défault des téléchargements",
+		"type": "string",
+		"value": "",
+		"hidden": true
+	}, {
+		"name": "defaultLocationControl",
+		"title": "Destination par défault",
+		"description": "Le dossier où iront tous les téléchargements par défaut.",
+		"type": "control",
+		"label": "Définir"
+	}, {
+		"name": "locations",
+		"title": "Destinations enregistrées",
+		"description": "La liste des destinations enregistrées",
+		"type": "control",
+		"label": "Modifier"
+	}]
 }
