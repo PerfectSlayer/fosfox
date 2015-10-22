@@ -10,22 +10,22 @@ var dirLocationMessage = 'dans ';
  * Create main div style.
  */
 function mainDivStyle(url) {
-	return 'background: url("' + url +'") no-repeat scroll left 0px content-box border-box -moz-field;' +
-	' position: relative;' +
-	' min-width: 13em;' +
-	' max-width: 52em;' +
-	' margin: 4em auto;' +
-	' padding: 3em;' +
-	' -moz-padding-start: 30px;' +
-	' border: 1px solid threedshadow;' +
-	' border-radius: 10px;';
+	return 'background: url("' + url + '") no-repeat scroll left 0px content-box border-box -moz-field;' +
+		' position: relative;' +
+		' min-width: 13em;' +
+		' max-width: 52em;' +
+		' margin: 4em auto;' +
+		' padding: 3em;' +
+		' -moz-padding-start: 30px;' +
+		' border: 1px solid threedshadow;' +
+		' border-radius: 10px;';
 }
 
 /*
  * Create message reception from main.js.
  */
 // Create icon message receiver
-self.port.on('icon', function (favicon, icon) {
+self.port.on('icon', function(favicon, icon) {
 	// TODO do not work for favicon
 	// console.log('on icon ' + favicon + ' ' + icon + '.');
 	// Get favicon link
@@ -45,22 +45,22 @@ self.port.on('icon', function (favicon, icon) {
 	mainDiv.style = mainDivStyle(icon);
 });
 // Create download message receiver
-self.port.on('download', function (url) {
+self.port.on('download', function(url) {
 	// Save download URL
 	downloadUrl = url;
 });
 // Create pwd message receiver
-self.port.on('pwd', function (path) {
+self.port.on('pwd', function(path) {
 	// Get location div
 	var locationDiv = document.getElementById('location');
 	// Get location message
 	var locationMessage = baseLocationMessage;
 	if (path === '') {
-		locationMessage+= rootLocationMessage;
+		locationMessage += rootLocationMessage;
 	} else {
-		locationMessage+= dirLocationMessage + path;
+		locationMessage += dirLocationMessage + path;
 	}
-	locationMessage+= '.';
+	locationMessage += '.';
 	// Update location div content
 	locationDiv.innerHTML = locationMessage;
 });
@@ -68,7 +68,7 @@ self.port.on('pwd', function (path) {
 /*
  * Create message reception from page script.
  */
-document.defaultView.addEventListener('message', function (event) {
+document.defaultView.addEventListener('message', function(event) {
 	// Check event data action
 	if (typeof event.data.action === undefined)
 		return;
@@ -130,7 +130,9 @@ browseButton.style = 'margin-top: 2em; -moz-margin-start: 100px;';
 mainDiv.appendChild(browseButton);
 // Add browse button listener
 browseButton.addEventListener('click', function() {
-	document.defaultView.postMessage({action: 'browse'}, '*');
+	document.defaultView.postMessage({
+		action: 'browse'
+	}, '*');
 }, false);
 // Create and append download button
 var downloadButton = document.createElement('button');
@@ -140,5 +142,7 @@ downloadButton.style = 'margin-top: 2em; margin-left: 40px;';
 mainDiv.appendChild(downloadButton);
 // Add download button listener
 downloadButton.addEventListener('click', function() {
-	document.defaultView.postMessage({action: 'download'}, '*');
+	document.defaultView.postMessage({
+		action: 'download'
+	}, '*');
 }, false);

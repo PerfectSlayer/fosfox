@@ -2,7 +2,7 @@
  * Create message reception from main.js.
  */
 // Create display message receiver
-self.port.on('display', function (locations) {
+self.port.on('display', function(locations) {
 	// Send a message to page script to display locations
 	document.defaultView.postMessage({
 		action: 'display',

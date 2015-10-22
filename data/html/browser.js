@@ -68,7 +68,7 @@ var buildExplorer = function(path) {
 	// Get the depth of the path
 	var depth = fileSystem.computeDepth(path);
 	if (depth === 0) {
-	// Add nodes on root node
+		// Add nodes on root node
 		w2ui.fileSystem.add(nodes);
 	} else {
 		// Add nodes to parent node

@@ -1,7 +1,7 @@
 /*
  * Explore a path.
  */
-var explore = function (path) {
+var explore = function(path) {
 	// Send a message to list content of a path
 	window.postMessage({
 		action: 'ls',
@@ -12,7 +12,7 @@ var explore = function (path) {
 /*
  * Valid the selected path.
  */
-var valid = function () {
+var valid = function() {
 	// Get selected path
 	var selectedPath = w2ui.fileSystem.selected;
 	if (selectedPath === '')
@@ -28,7 +28,7 @@ var valid = function () {
 /*
  * Cancel the dialog.
  */
-var cancel = function () {
+var cancel = function() {
 	// Send add-on message to close panel
 	window.postMessage({
 		action: 'cancel'
@@ -57,7 +57,7 @@ window.addEventListener('message', function(event) {
 				'recid': index++,
 				'site': site,
 				'location': locations[site].path,
-				'always': locations[site].always ? "Oui" : "Non"
+				'always': locations[site].always ? 'Oui' : 'Non'
 			});
 		}
 		// Update the grid
@@ -68,7 +68,7 @@ window.addEventListener('message', function(event) {
 /*
  * Initialize grid.
  */
-$(function () {
+$(function() {
 	// Create grid
 	$('#locations').w2grid({
 		name: 'grid',
@@ -84,50 +84,43 @@ $(function () {
 			footer: true,
 			selectColumn: true
 		},
-		columns: [
-			{
-				field: 'site',
-				caption: 'Site',
-				size: '40%',
-				resizable: true,
-				sortable: true
-			},
-			{
-				field: 'location',
-				caption: 'Destination',
-				size: '50%',
-				resizable: true,
-				sortable: true
-			},
-			{
-				field: 'always',
-				caption: 'Toujours',
-				size: '10%',
-				resizable: true,
-				sortable: true
-			}
-		],
+		columns: [{
+			field: 'site',
+			caption: 'Site',
+			size: '40%',
+			resizable: true,
+			sortable: true
+		}, {
+			field: 'location',
+			caption: 'Destination',
+			size: '50%',
+			resizable: true,
+			sortable: true
+		}, {
+			field: 'always',
+			caption: 'Toujours',
+			size: '10%',
+			resizable: true,
+			sortable: true
+		}],
 		multiSearch: false,
 		multiSelect: false,
-		searches: [
-			{
-				type: 'text',
-				field: 'site',
-				caption: 'Site'
-			},
-			{
-				type: 'text',
-				field: 'location',
-				caption: 'Destination'
-			}
-		],
-		onEdit: function (event) {
+		searches: [{
+			type: 'text',
+			field: 'site',
+			caption: 'Site'
+		}, {
+			type: 'text',
+			field: 'location',
+			caption: 'Destination'
+		}],
+		onEdit: function(event) {
 			// Get indexes of selected records
 			var indexes = w2ui.grid.getSelection(true);
 			// Delete each site location
 			for (var key in indexes) {
 				// Get selected recod
-				var record =  w2ui.grid.records[indexes[key]];
+				var record = w2ui.grid.records[indexes[key]];
 				// Send add-on message to edit path for the site
 				window.postMessage({
 					action: 'edit',
@@ -135,7 +128,7 @@ $(function () {
 				}, '*');
 			}
 		},
-		onDelete: function (event) {
+		onDelete: function(event) {
 			// Remove confirmation dialog
 			event.force = true;
 			// Get indexes of selected records
@@ -143,7 +136,7 @@ $(function () {
 			// Delete each site location
 			for (var key in indexes) {
 				// Get selected recod
-				var record =  w2ui.grid.records[indexes[key]];
+				var record = w2ui.grid.records[indexes[key]];
 				// Send add-on message to delete path for the site
 				window.postMessage({
 					action: 'delete',
@@ -154,7 +147,7 @@ $(function () {
 	});
 });
 
-var dump = function (variable) {
+var dump = function(variable) {
 	for (var index in variable) {
 		try {
 			window.postMessage({
