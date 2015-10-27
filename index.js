@@ -1,3 +1,5 @@
+'use strict';
+
 // Include modules
 const Base64 = require('sdk/base64');
 const Notifications = require('sdk/notifications');
@@ -22,19 +24,19 @@ const app_name = 'Freebox OS for Firefox';
 const app_version = '0.4';
 const device_name = 'Workstation';
 // Declare application authentication statuses
-var app_token = null;
-var track_id = null;
-var session_token = null;
+let app_token = null;
+let track_id = null;
+let session_token = null;
 // Declare download variables
-var downloadUrl = null;
-var downloadLocation = null;
+let downloadUrl = null;
+let downloadLocation = null;
 // Declare magnet tab worker collection
-var magnetTabWorkers = [];
+let magnetTabWorkers = [];
 
 /*
  * Freebox API.
  */
-var freebox = {
+let freebox = {
 	api_version: null,
 	api_base_url: null,
 
@@ -43,15 +45,15 @@ var freebox = {
 	 */
 	discover: function(callback) {
 		// Send discover request
-		var discoveryRequest = Request({
+		Request({
 			anonymous: true,
 			url: 'http://mafreebox.freebox.fr/api_version',
 			onComplete: function(response) {
 				// Check response json data
 				if (response.json) {
 					// Save API version and API base URL
-					api_version = response.json.api_version;
-					api_base_url = response.json.api_base_url;
+					freebox.api_version = response.json.api_version;
+					freebox.api_base_url = response.json.api_base_url;
 					// Notify callback freebox OS found
 					callback(true);
 				} else {
@@ -82,14 +84,14 @@ var freebox = {
 				return;
 			}
 			// Create request content
-			var content = JSON.stringify({
+			let content = JSON.stringify({
 				app_id: app_id,
 				app_name: app_name,
 				app_version: app_version,
 				device_name: device_name
 			});
 			// Send authorize request
-			var authorizeRequest = Request({
+			let authorizeRequest = Request({
 				anonymous: true,
 				url: 'http://mafreebox.freebox.fr/api/v3/login/authorize/',
 				content: content,
@@ -121,14 +123,14 @@ var freebox = {
 		 */
 		authorizeTrack: function(track_id, callback) {
 			// Send track authorization status
-			var authorizeRequest = Request({
+			Request({
 				anonymous: true,
 				url: 'http://mafreebox.freebox.fr/api/v3/login/authorize/' + track_id,
 				onComplete: function(response) {
 					// Check response json data
 					if (response.json && response.json.success === true) {
 						// Get status
-						var status = response.json.result.status;
+						let status = response.json.result.status;
 						console.log('Current track status: ' + status);
 						// Notify callback with status
 						callback(status);
@@ -174,7 +176,7 @@ var freebox = {
 		 */
 		session: function(challenge, callback) {
 			// Create request content
-			var content = JSON.stringify({
+			let content = JSON.stringify({
 				app_id: app_id,
 				password: '' + CryptoJS.HmacSHA1(challenge, app_token)
 			});
@@ -192,7 +194,7 @@ var freebox = {
 							session_token = response.json.result.session_token;
 							console.log('Logged in with session token: ' + session_token);
 							// console.log('Current permissions:');
-							// for (var key in response.json.result.permissions)
+							// for (let key in response.json.result.permissions)
 							// console.log(key + ': ' + response.json.result.permissions[key]);
 							// Notify callback
 							callback(true);
@@ -332,7 +334,7 @@ var freebox = {
 			if (session_token === null)
 				return false;
 			// Create request content
-			var content = JSON.stringify({
+			let content = JSON.stringify({
 				parent: parent,
 				dirname: dirname
 			});
@@ -368,7 +370,7 @@ var freebox = {
  * Create hook to add freebox server option to download page.
  */
 // Create window tracker delegate
-var windowTrackerDelegate = {
+let windowTrackerDelegate = {
 	/*
 	 * onTrack of tracker API.
 	 */
@@ -383,8 +385,8 @@ var windowTrackerDelegate = {
 		// Save download URL
 		downloadUrl = window.dialog.mLauncher.source.spec;
 		// Get download location and label
-		var downloadLocation = LocationManager.get(downloadUrl);
-		var downloadLocationLabel = '';
+		let downloadLocation = LocationManager.get(downloadUrl);
+		let downloadLocationLabel = '';
 		// Check always use path
 		if (downloadLocation.always) {
 			// Set download location
@@ -399,15 +401,15 @@ var windowTrackerDelegate = {
 		 * Edit XUL window.
 		 */
 		// Get mode radiogroup element
-		var modeElement = window.document.getElementById('mode');
+		let modeElement = window.document.getElementById('mode');
 		// Get save radio element
-		var saveElement = window.document.getElementById('save');
+		let saveElement = window.document.getElementById('save');
 		// Create freebox radio element
-		var freeboxElement = window.document.createElement('radio');
+		let freeboxElement = window.document.createElement('radio');
 		freeboxElement.setAttribute('id', 'freebox');
 		freeboxElement.setAttribute('label', 'Envoyer sur la Freebox' + downloadLocationLabel);
 		// Create hbox element
-		var hboxElement = window.document.createElement('hbox');
+		let hboxElement = window.document.createElement('hbox');
 		hboxElement.setAttribute('flex', '1');
 		// Append freebox radio element to hbox element
 		hboxElement.appendChild(freeboxElement);
@@ -417,9 +419,9 @@ var windowTrackerDelegate = {
 		 * Edit XUL behavior.
 		 */
 		// Get window element
-		var windowElement = window.document.getElementById('unknownContentType');
+		let windowElement = window.document.getElementById('unknownContentType');
 		// Get current validation script
-		var currentValidation = windowElement.getAttribute('ondialogaccept');
+		let currentValidation = windowElement.getAttribute('ondialogaccept');
 		// Save old validation behavior
 		window.dialog.oldOnOK = window.dialog.onOK;
 		// Define new validation behavior
@@ -459,21 +461,21 @@ var windowTrackerDelegate = {
 	onUntrack: function(window) {}
 };
 // Include deprecated window-utils
-var WinUtils = require('sdk/deprecated/window-utils');
+const WinUtils = require('sdk/deprecated/window-utils');
 // Register window tracker delegate
-var tracker = new WinUtils.WindowTracker(windowTrackerDelegate);
+const tracker = new WinUtils.WindowTracker(windowTrackerDelegate);
 
 /*
  * Create application action button.
  */
 // Create action button
-var actionButton = Ui.ActionButton({
+let actionButton = Ui.ActionButton({
 	id: 'freebox-os-button',
 	label: app_name,
 	icon: Self.data.url('images/freebox.png'),
 	onClick: function() {
 		// Declare if tab was found
-		var foundTab = false;
+		let foundTab = false;
 		// Check each opened tab
 		for (let tab of Tabs) {
 			// Check tab URL
@@ -496,8 +498,9 @@ var actionButton = Ui.ActionButton({
 // Create action button API
 actionButton.startEtaUpdate = function(delay) {
 	// Check if ETA update delay differs
-	if (delay === actionButton.etaUpdateDelay)
+	if (delay === actionButton.etaUpdateDelay) {
 		return;
+	}
 	// Update ETA update delay
 	actionButton.etaUpdateDelay = delay;
 	// Check current ETA update timer
@@ -523,14 +526,14 @@ actionButton.stopEtaUpdate = function() {
 	// Create callback for freebox download list API
 actionButton.etaUpdateCallback = function(downloads) {
 		// Declare max ETA
-		var maxEta = 0;
+		let maxEta = 0;
 		// Check each download
-		for (var i = 0; i < downloads.length; i++) {
+		for (let i = 0; i < downloads.length; i++) {
 			// Check download status
 			if (downloads[i].status !== 'downloading')
 				continue;
 			// Get download ETA
-			var eta = downloads[i].eta;
+			let eta = downloads[i].eta;
 			// Check max ETA
 			if (eta > maxEta) {
 				// Update max ETA
@@ -549,18 +552,18 @@ actionButton.etaUpdateCallback = function(downloads) {
 			actionButton.badge = Math.ceil(maxEta / 60) + 'm';
 		} else {
 			// Check hours lefts
-			var hours = Math.floor(maxEta / 3600);
+			let hours = Math.floor(maxEta / 3600);
 			if (hours > 9) {
 				// Only display hours
 				actionButton.badge = hours + 1 + 'h';
 			} else {
 				// Display hours and minutes
-				var minutes = Math.ceil((maxEta % 3600) / 60);
+				let minutes = Math.ceil((maxEta % 3600) / 60);
 				actionButton.badge = hours + 'h' + minutes;
 			}
 		}
 		// Declare new update delay
-		var etaUpdateDelay;
+		let etaUpdateDelay;
 		// Check max ETA
 		if (maxEta === 0) {
 			// Increase ETA update delay to 10 seconds
@@ -582,7 +585,7 @@ actionButton.stopEtaUpdate();
  * Create connection panel.
  */
 // Create connection panel
-var connectionPanel = Panel.Panel({
+let connectionPanel = Panel.Panel({
 	width: 400,
 	height: 60,
 	position: {
@@ -609,7 +612,7 @@ connectionPanel.setStatus = function(status, type, forceShowing) {
  * Create browser panel.
  */
 // Create browser panel
-var browserPanel = Panel.Panel({
+let browserPanel = Panel.Panel({
 	width: 600,
 	height: 400,
 	contentURL: Self.data.url('html/browser.html'),
@@ -638,9 +641,9 @@ browserPanel.lsRecursiveCallback = function(path, content, stack, remember) {
 		// Clear previous tree
 		browserPanel.port.emit('clear');
 		// Notify panel of tree result
-		for (var index = stack.length - 1; index >= 0; index--) {
+		for (let index = stack.length - 1; index >= 0; index--) {
 			// Notify panel of result
-			var result = stack[index];
+			let result = stack[index];
 			browserPanel.port.emit('render', result.path, result.content);
 			// Check last path to select
 			if (index === 0) {
@@ -673,7 +676,7 @@ browserPanel.port.on('select', function(path, remember) {
 	// Check callback
 	if (typeof browserPanel.callback === 'function') {
 		// Declare location
-		var location = {
+		let location = {
 			'path': path,
 			'always': remember
 		};
@@ -693,7 +696,7 @@ browserPanel.port.on('dump', function(variable, filter) {
 // Bind the browser panel opening on preferences control
 SimplePrefs.on('defaultLocationControl', function() {
 	// Get default location
-	var defaultLocation = {
+	let defaultLocation = {
 		'path': SimplePrefs.prefs.defaultLocation,
 		'always': true
 	};
@@ -708,7 +711,7 @@ SimplePrefs.on('defaultLocationControl', function() {
  * Create locations panel.
  */
 // Create locations panel
-var locationsPanel = Panel.Panel({
+let locationsPanel = Panel.Panel({
 	width: 800,
 	height: 600,
 	contentURL: Self.data.url('html/locations.html'),
@@ -717,10 +720,10 @@ var locationsPanel = Panel.Panel({
 // Create loaction panel API
 locationsPanel.open = function() {
 	// Get all paths from location manager
-	var paths = LocationManager.getAll();
+	let paths = LocationManager.getAll();
 	// Decode all paths to locations
-	var locations = {};
-	for (var domain in paths) {
+	let locations = {};
+	for (let domain in paths) {
 		locations[domain] = {
 			path: LocationManager.decodePath(paths[domain].path),
 			always: paths[domain].always
@@ -733,7 +736,7 @@ locationsPanel.open = function() {
 };
 locationsPanel.port.on('edit', function(domain) {
 	// Get location for edited domain
-	var location = LocationManager.getAll()[domain];
+	let location = LocationManager.getAll()[domain];
 	if (typeof location === 'undefined') {
 		return;
 	}
@@ -772,9 +775,9 @@ Tabs.on('ready', function(tab) {
 			always: false
 		};
 	// Decode download location label
-	var downloadLocationLabel = LocationManager.decodePath(downloadLocation.path);
+	let downloadLocationLabel = LocationManager.decodePath(downloadLocation.path);
 	// Attach content script
-	var worker = tab.attach({
+	let worker = tab.attach({
 		contentScriptFile: Self.data.url('html/magnet-content.js')
 	});
 	// Add worker to magnet tab worker collection
@@ -792,11 +795,11 @@ Tabs.on('ready', function(tab) {
 			// Save download location
 			downloadLocation = location;
 			// Decode download location label
-			var downloadLocationLabel = LocationManager.decodePath(downloadLocation.path);
+			let downloadLocationLabel = LocationManager.decodePath(downloadLocation.path);
 			// Update magnet pages
-			for (var index in magnetTabWorkers) {
+			for (let index in magnetTabWorkers) {
 				// Get magnet tab worker
-				var magnetTabWorker = magnetTabWorkers[index];
+				let magnetTabWorker = magnetTabWorkers[index];
 				// Check if worker is always valid
 				if (magnetTabWorker.tab === null) {
 					// Remove the worker from collection
@@ -819,7 +822,7 @@ Tabs.on('ready', function(tab) {
 /*
  * Initialize freebox OS application.
  */
-var discoverCallback = function(found) {
+let discoverCallback = function(found) {
 	// Ensure freebox OS is found
 	if (!found) {
 		// Notify user of not found freebox
@@ -832,13 +835,13 @@ var discoverCallback = function(found) {
 	// Authorize application
 	freebox.login.authorize(authorizeCallback);
 };
-var authorizeCallback = function(track_id) {
+let authorizeCallback = function(track_id) {
 	// Update connection step
 	connectionPanel.setStep(3, 5);
 	// Track authorization progress
 	freebox.login.authorizeTrack(track_id, authorizeTrackCallback);
 };
-var authorizeTrackCallback = function(status) {
+let authorizeTrackCallback = function(status) {
 	// Check status
 	if (status === 'granted') {
 		// Update connection step
@@ -861,13 +864,13 @@ var authorizeTrackCallback = function(status) {
 		discoverCallback(true);
 	}
 };
-var loginCallback = function(challenge) {
+let loginCallback = function(challenge) {
 	// Update connection step
 	connectionPanel.setStep(4, 5);
 	// Log application with the given challenge
 	freebox.login.session(challenge, sessionCallback);
 };
-var sessionCallback = function(sessionOpened, errorCode) {
+let sessionCallback = function(sessionOpened, errorCode) {
 		// Check session opened
 		if (sessionOpened) {
 			// Update connection step
@@ -900,7 +903,7 @@ Timers.setTimeout(function() {
 /*
  * Create reconnection mechanism to cover challenge change.
  */
-var handleError = function(json, call) {
+let handleError = function(json, call) {
 	// Check error code
 	if (json.error_code === 'auth_required') {
 		// Log application with the given challenge
