@@ -10,11 +10,11 @@ const Tabs = require('sdk/tabs');
 const Timers = require('sdk/timers');
 const Ui = require('sdk/ui');
 // Include CryptoJS library
-const CryptoJS = require('hmac-sha1').CryptoJS;
+const CryptoJS = require('./lib/hmac-sha1').CryptoJS;
 // Include Dump module
-const Dump = require('rdump');
+const Dump = require('./lib/rdump');
 // Include Location Manager module
-const LocationManager = require('location-manager');
+const LocationManager = require('./lib/location-manager');
 
 // Declare application constants
 const app_id = 'fr.hardcoding.firefox.freeboxos';
