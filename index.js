@@ -440,8 +440,11 @@ let windowTrackerDelegate = {
 					browserPanel.open(downloadLocation, function(location) {
 						// Save download location
 						downloadLocation = location;
-						// Add the location to the manager
-						LocationManager.save(downloadUrl, location);
+						// Check the location strategy
+						if (SimplePrefs.prefs.locationStrategy === 'learn') {
+							// Add the location to the manager
+							LocationManager.save(downloadUrl, location);
+						}
 						// Save last path to the manager
 						LocationManager.setLastPath(location.path);
 						// Add the download

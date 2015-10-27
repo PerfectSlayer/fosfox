@@ -7,7 +7,7 @@
 	"icon": "data/images/icon.png",
 	"homepage": "http://blog.hardcoding.fr/other-projects/",
 	"license": "GPL v3",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"preferences": [{
 		"name": "locationStrategy",
 		"title": "Destination des téléchargements",
