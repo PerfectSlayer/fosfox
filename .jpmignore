@@ -1,4 +1,4 @@
 .*
-*.xpi
 profile
-run.bat
+run.*
+*.xpi
